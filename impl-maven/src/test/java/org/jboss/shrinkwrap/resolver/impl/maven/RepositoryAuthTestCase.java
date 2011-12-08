@@ -46,7 +46,7 @@ import org.mortbay.jetty.handler.AbstractHandler;
 
 /**
  * Tests resolution of the artifacts witch remote repository protected by password
- * 
+ *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public class RepositoryAuthTestCase {
@@ -67,14 +67,14 @@ public class RepositoryAuthTestCase {
         // online
         Server server = startHttpServer();
         File[] file = DependencyResolvers.use(MavenDependencyResolver.class)
-                .configureFrom("target/settings/profiles/settings-auth.xml")
+                .loadSettings("target/settings/profiles/settings-auth.xml")
                 .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
         shutdownHttpServer(server);
         Assert.assertEquals("One file was retrieved", 1, file.length);
 
         // offline with artifact in local repository
         file = DependencyResolvers.use(MavenDependencyResolver.class)
-                .configureFrom("target/settings/profiles/settings-auth.xml").goOffline()
+                .loadSettings("target/settings/profiles/settings-auth.xml").goOffline()
                 .artifact("org.jboss.shrinkwrap.test:test-deps-i:1.0.0").resolveAsFiles();
 
         Assert.assertEquals("One file was retrieved", 1, file.length);
@@ -124,7 +124,7 @@ public class RepositoryAuthTestCase {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.mortbay.jetty.Handler#handle(java.lang.String, javax.servlet.http.HttpServletRequest,
          * javax.servlet.http.HttpServletResponse, int)
          */
