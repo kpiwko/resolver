@@ -32,8 +32,7 @@ public class ServiceRegistry implements ServiceLoader {
 
     private ServiceLoader serviceLoader;
 
-    @SuppressWarnings("rawtypes")
-    private Map<Class, Collection> cachedServiceInstances;
+    private Map<Class<?>, Collection<?>> cachedServiceInstances;
 
     private static ServiceRegistry instance;
 
@@ -42,10 +41,9 @@ public class ServiceRegistry implements ServiceLoader {
      *
      * @param serviceLoader
      */
-    @SuppressWarnings("rawtypes")
     public ServiceRegistry(ServiceLoader serviceLoader) {
         this.serviceLoader = serviceLoader;
-        this.cachedServiceInstances = Collections.synchronizedMap(new HashMap<Class, Collection>());
+        this.cachedServiceInstances = Collections.synchronizedMap(new HashMap<Class<?>, Collection<?>>());
     }
 
     /**
@@ -78,6 +76,7 @@ public class ServiceRegistry implements ServiceLoader {
      * @throws IllegalArgumentException If {@code serviceClass} is {@code null}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public <T> Collection<T> all(Class<T> serviceClass) throws IllegalArgumentException {
 
         if (serviceClass == null) {
@@ -103,6 +102,7 @@ public class ServiceRegistry implements ServiceLoader {
      * @throws IllegalStateException If more than a single service is registered
      */
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T onlyOne(Class<T> serviceClass) throws IllegalArgumentException, IllegalStateException {
 
         // double check here, we don't eventually want to pass null as a key to the map
@@ -132,6 +132,7 @@ public class ServiceRegistry implements ServiceLoader {
      * @throws IllegalStateException If more than a single service is registered
      */
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T onlyOne(Class<T> serviceClass, Class<? extends T> defaultImplementationClass)
             throws IllegalArgumentException, IllegalStateException {
 
