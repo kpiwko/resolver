@@ -43,7 +43,7 @@ import org.sonatype.aether.artifact.Artifact;
  * Immutable implementation of {@link MavenResolvedArtifact}.
  *
  * @author <a href="mailto:mmatloka@gmail.com">Michal Matloka</a>
- * @author <a href="mailto:kpiwko@redhat.com">Michal Matloka</a>
+ * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  */
 public class MavenResolvedArtifactImpl implements MavenResolvedArtifact {
     private static final Logger log = Logger.getLogger(MavenResolvedArtifactImpl.class.getName());
