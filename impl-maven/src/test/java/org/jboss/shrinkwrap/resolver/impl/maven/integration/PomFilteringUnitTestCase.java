@@ -45,8 +45,9 @@ public class PomFilteringUnitTestCase {
     @Test
     public void testIncludeFromPomWithExclusionFilter() {
         final File[] jars = Maven.resolver().loadPomFromFile("target/poms/test-filter.xml")
-            .importRuntimeDependencies(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
-            .as(File.class);
+                .importCompileAndRuntimeDependencies().resolve()
+                .using(new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-c"))
+                .as(File.class);
 
         // We should not bring in b and c, as b is transitive from c, and we excluded c above.
         new ValidationUtil("test-deps-a", "test-deps-d", "test-deps-e").validate(jars);
@@ -57,15 +58,16 @@ public class PomFilteringUnitTestCase {
     public void testIncludeFromPomWithExclusionsFilter() {
 
         final File jar = Maven
-            .resolver()
-            .loadPomFromFile("target/poms/test-filter.xml")
-            .importRuntimeDependencies(
-            // this is applied before resolution, e.g. has no information about transitive dependencies
-            // it means:
-            // 1. it excludes whole tree of the exclusion /
-                new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-a",
-                    "org.jboss.shrinkwrap.test:test-deps-c", "org.jboss.shrinkwrap.test:test-deps-d"))
-            .asSingle(File.class);
+                .resolver()
+                .loadPomFromFile("target/poms/test-filter.xml")
+                .importCompileAndRuntimeDependencies().resolve()
+                .using(
+                        // this is applied before resolution, e.g. has no information about transitive dependencies
+                        // it means:
+                        // 1. it excludes whole tree of the exclusion /
+                        new RejectDependenciesStrategy("org.jboss.shrinkwrap.test:test-deps-a",
+                                "org.jboss.shrinkwrap.test:test-deps-c", "org.jboss.shrinkwrap.test:test-deps-d"))
+                .asSingle(File.class);
 
         new ValidationUtil("test-deps-e").validate(jar);
     }

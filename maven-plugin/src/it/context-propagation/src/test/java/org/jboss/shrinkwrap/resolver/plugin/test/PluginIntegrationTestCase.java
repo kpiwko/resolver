@@ -40,7 +40,7 @@ public class PluginIntegrationTestCase {
     public void strictlyLoadTestDependencies() {
         PomEquippedResolveStage resolver = Maven.configureResolverViaPlugin();
 
-        final File[] files = resolver.importRuntimeDependencies(NonTransitiveStrategy.INSTANCE).as(File.class);
+        final File[] files = resolver.importCompileAndRuntimeDependencies().resolve().withoutTransitivity().as(File.class);
         new ValidationUtil("junit").validate(files);
     }
 
