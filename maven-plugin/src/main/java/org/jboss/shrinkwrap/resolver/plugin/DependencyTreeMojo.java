@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenArtifactInfo;
@@ -18,14 +19,9 @@ import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
  *
  * Following properties are propagated:
  *
- * @goal dependency-tree
- * @requiresProject
- * @requiresDirectInvocation
- * @requiresDependencyCollection test
- * @executionStrategy always
- *
  */
-public class DependencyTreeMojo extends AbstractMojo {
+@Mojo(name = "dependency-tree", requiresDirectInvocation = true, requiresDependencyCollection = ResolutionScope.TEST)
+public class DependencyTreeMojo extends AbstractResolverMojo {
 
     private static final String OUTPUT_DELIMITER;
     static {
@@ -36,20 +32,7 @@ public class DependencyTreeMojo extends AbstractMojo {
         OUTPUT_DELIMITER = sb.toString();
     }
 
-    /**
-     * The current build session instance.
-     *
-     * @parameter expression="${session}"
-     * @required
-     * @readonly
-     */
-    private MavenSession session;
-
-    /**
-     * Output file for the dependency tree, can be omitted
-     *
-     * @parameter expression="${outputFile}"
-     */
+    @Parameter(defaultValue = "${outputFile}")
     private File outputFile;
 
     /**
@@ -57,8 +40,10 @@ public class DependencyTreeMojo extends AbstractMojo {
      *
      * @parameter expression="${scope}"
      */
+    @Parameter(defaultValue = "${scope}")
     private String scope;
 
+    @Override
     public void execute() throws MojoExecutionException {
 
         // first, we need to propagate environment settings

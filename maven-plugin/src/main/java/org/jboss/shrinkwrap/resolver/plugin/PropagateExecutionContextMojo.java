@@ -7,8 +7,10 @@ import java.util.Properties;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Profile;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Propagates current Maven Execution properties to mimic they were specified on the command line by user himself.
@@ -22,33 +24,15 @@ import org.apache.maven.plugin.MojoExecutionException;
  * <li>global-settings</li>
  * <li>active-profiles</li>
  * </ul>
- * length()
- *
- * @goal propagate-execution-context
- * @phase process-test-classes
- * @requiresProject
- * @executionStrategy always
  *
  */
-public class PropagateExecutionContextMojo extends AbstractMojo {
+@Mojo(name = "propagate-execution-context", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES)
+public class PropagateExecutionContextMojo extends AbstractResolverMojo {
 
-    /**
-     * The current build session instance.
-     *
-     * @parameter expression="${session}"
-     * @required
-     * @readonly
-     */
-    private MavenSession session;
-
-    /**
-     * Name space where properties are stored. This means that all the properties are stored under
-     * "namespace.value. + property.name"
-     *
-     * @parameter expression="${namespace}" default-value="maven.execution."
-     */
+    @Parameter(property = "namespace", defaultValue = "maven.execution.")
     private String namespace;
 
+    @Override
     public void execute() throws MojoExecutionException {
 
         MavenExecutionRequest request = session.getRequest();
